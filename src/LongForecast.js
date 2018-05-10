@@ -1,20 +1,32 @@
 import React, { Component } from 'react';
-import celciusConverter from './Utils/celciusConverter';
+import temperatureConverter from './Utils/temperatureConverter';
 import timeConverter from './Utils/timeConverter';
 
 class LongForecast extends Component {
   static defaultProps = {
-    position: null,
-    // currentDate: null,
+    weather: null,
   }
 
-  componentWillMount() {
- //console.log(this.props.weather);
-    
+  dateTimeIsHour12 = (x) => {
+    let date = new Date(x.validTime)
+    date = new Date(date.getTime()-(2*60*60*1000))
+
+    return date.getHours() === 12
   }
+
+  celsiusToKelvin = (celsius) => celsius + 273.15
 
   render() {
-   // console.log(this.props);
+    const { weather, tempUnit } = this.props
+    let weatherTimes = weather.timeSeries.filter(this.dateTimeIsHour12);
+    
+    weatherTimes = weatherTimes.map((x) => {
+      const celsius = x.parameters[11].values[0];
+      x.kelvin = this.celsiusToKelvin(celsius)
+      return x;
+    })
+
+    weatherTimes = weatherTimes.slice(0, 7);
 
     return (
       <div>
@@ -23,55 +35,45 @@ class LongForecast extends Component {
           <thead>
             <tr>
               <th scope="col"></th>
-              <th scope="col">{this.props.weather.timeSeries[3].validTime.substr(0, 10)}</th>
-              <th scope="col">{this.props.weather.timeSeries[27].validTime.substr(0, 10)}</th>
-              <th scope="col">{this.props.weather.timeSeries[43].validTime.substr(0, 10)}</th>
-              <th scope="col">{this.props.weather.timeSeries[47].validTime.substr(0, 10)}</th>
-              <th scope="col">{this.props.weather.timeSeries[51].validTime.substr(0, 10)}</th>
-              <th scope="col">{this.props.weather.timeSeries[55].validTime.substr(0, 10)}</th>
-              <th scope="col">{this.props.weather.timeSeries[58].validTime.substr(0, 10)}</th>
+              {weatherTimes.map((x, index) => {
+                return (
+                  <th key={index} scope="col">{x.validTime.substr(0, 10)}</th>
+                )
+              })}
             </tr>
             <tr>
               <th scope="col"></th>
-              <th scope="col">{this.props.weather.timeSeries[3].validTime.substr(11, 5)}</th>
-              <th scope="col">{this.props.weather.timeSeries[27].validTime.substr(11, 5)}</th>
-              <th scope="col">{this.props.weather.timeSeries[43].validTime.substr(11, 5)}</th>
-              <th scope="col">{this.props.weather.timeSeries[47].validTime.substr(11, 5)}</th>
-              <th scope="col">{this.props.weather.timeSeries[51].validTime.substr(11, 5)}</th>
-              <th scope="col">{this.props.weather.timeSeries[55].validTime.substr(11, 5)}</th>
-              <th scope="col">{this.props.weather.timeSeries[58].validTime.substr(11, 5)}</th>
+              {weatherTimes.map((x, index) => {
+                return (
+                  <th key={index} scope="col">{x.validTime.substr(11, 5)}</th>
+                )
+              })}
             </tr>
           </thead>
           <tbody>
             <tr>
               <th scope="row"></th>
-              <td><img src={"../icons/" + this.props.weather.timeSeries[3].parameters[18].values[0] + ".png"} /></td>
-              <td><img src={"../icons/" + this.props.weather.timeSeries[27].parameters[18].values[0] + ".png"} /></td>
-              <td><img src={"../icons/" + this.props.weather.timeSeries[43].parameters[18].values[0] + ".png"} /></td>
-              <td><img src={"../icons/" + this.props.weather.timeSeries[47].parameters[18].values[0] + ".png"} /></td>
-              <td><img src={"../icons/" + this.props.weather.timeSeries[51].parameters[18].values[0] + ".png"} /></td>
-              <td><img src={"../icons/" + this.props.weather.timeSeries[55].parameters[18].values[0] + ".png"} /></td>
-              <td><img src={"../icons/" + this.props.weather.timeSeries[58].parameters[18].values[0] + ".png"} /></td>
+              {weatherTimes.map((x, index) => {
+                return (
+                  <td key={index}><img src={"../icons/" + x.parameters[18].values[0] + ".png"} /></td>
+                )
+              })}
             </tr>
             <tr>
               <th scope="row">Temperatur</th>
-              <td>{Math.round(celciusConverter(this.props.weather.timeSeries[3].parameters[11].values[0], this.props.tempUnit))} {this.props.tempUnit}</td>
-              <td>{Math.round(celciusConverter(this.props.weather.timeSeries[27].parameters[11].values[0], this.props.tempUnit))} {this.props.tempUnit}</td>
-              <td>{Math.round(celciusConverter(this.props.weather.timeSeries[43].parameters[11].values[0], this.props.tempUnit))} {this.props.tempUnit}</td>
-              <td>{Math.round(celciusConverter(this.props.weather.timeSeries[47].parameters[11].values[0], this.props.tempUnit))} {this.props.tempUnit}</td>
-              <td>{Math.round(celciusConverter(this.props.weather.timeSeries[51].parameters[11].values[0], this.props.tempUnit))} {this.props.tempUnit}</td>
-              <td>{Math.round(celciusConverter(this.props.weather.timeSeries[55].parameters[11].values[0], this.props.tempUnit))} {this.props.tempUnit}</td>
-              <td>{Math.round(celciusConverter(this.props.weather.timeSeries[58].parameters[11].values[0], this.props.tempUnit))} {this.props.tempUnit}</td>
+              {weatherTimes.map((x, index) => {
+                return (
+                  <td key={index}>{Math.round(temperatureConverter(x.kelvin, tempUnit))} {tempUnit}</td>
+                )
+              })}
             </tr>
             <tr>
               <th scope="row">Luftfuktighet</th>
-              <td>{this.props.weather.timeSeries[3].parameters[15].values[0]} %</td>
-              <td>{this.props.weather.timeSeries[27].parameters[15].values[0]} %</td>
-              <td>{this.props.weather.timeSeries[43].parameters[15].values[0]} %</td>
-              <td>{this.props.weather.timeSeries[47].parameters[15].values[0]} %</td>
-              <td>{this.props.weather.timeSeries[51].parameters[15].values[0]} %</td>
-              <td>{this.props.weather.timeSeries[55].parameters[15].values[0]} %</td>
-              <td>{this.props.weather.timeSeries[58].parameters[15].values[0]} %</td>
+              {weatherTimes.map((x, index) => {
+                return (
+                  <td key={index}>{x.parameters[15].values[0]} %</td>
+                )
+              })}
             </tr>
           </tbody>
         </table>

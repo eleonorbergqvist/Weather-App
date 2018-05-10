@@ -4,16 +4,15 @@ import timeConverter from './Utils/timeConverter';
 
 class Forecast5D extends Component {
   static defaultProps = {
-    position: null,
-    // currentDate: null,
-  }
-
-  componentWillMount() {
-   // console.log(this.props.weather);
-    
+    tempUnit: null,
+    weather: null,
   }
 
   render() {
+    const { tempUnit } = this.props
+    let forcasts = this.props.weather.list.filter((x, index) => {
+      return !(index%8);
+    })
 
     return (
       <div>
@@ -22,45 +21,45 @@ class Forecast5D extends Component {
         <thead>
           <tr>
             <th scope="col"></th>
-            <th scope="col">{this.props.weather.list[0].dt_txt.substr(0, 10)}</th>
-            <th scope="col">{this.props.weather.list[8].dt_txt.substr(0, 10)}</th>
-            <th scope="col">{this.props.weather.list[16].dt_txt.substr(0, 10)}</th>
-            <th scope="col">{this.props.weather.list[24].dt_txt.substr(0, 10)}</th>
-            <th scope="col">{this.props.weather.list[32].dt_txt.substr(0, 10)}</th>
+            {forcasts.map((forcast, index) => {
+              return (
+                <th scope="col" key={index}>{forcast.dt_txt.substr(0, 10)}</th>
+              )
+            })}
           </tr>
         </thead>
         <tbody>
           <tr>
             <th scope="row"></th>
-            <td><img src={"http://openweathermap.org/img/w/" + this.props.weather.list[0].weather[0].icon + ".png"} /></td>
-            <td><img src={"http://openweathermap.org/img/w/" + this.props.weather.list[8].weather[0].icon + ".png"} /></td>
-            <td><img src={"http://openweathermap.org/img/w/" + this.props.weather.list[16].weather[0].icon + ".png"} /></td>
-            <td><img src={"http://openweathermap.org/img/w/" + this.props.weather.list[24].weather[0].icon + ".png"} /></td>
-            <td><img src={"http://openweathermap.org/img/w/" + this.props.weather.list[32].weather[0].icon + ".png"} /></td>
+            {forcasts.map((forcast, index) => {
+              return (
+                <td key={index}><img src={"http://openweathermap.org/img/w/" + forcast.weather[0].icon + ".png"} /></td>
+              )
+            })}
           </tr>
           <tr>
             <th scope="row">Temperatur</th>
-            <td>{Math.round(temperatureConverter(this.props.weather.list[0].main.temp, this.props.tempUnit))} {this.props.tempUnit}</td>
-            <td>{Math.round(temperatureConverter(this.props.weather.list[8].main.temp, this.props.tempUnit))} {this.props.tempUnit}</td>
-            <td>{Math.round(temperatureConverter(this.props.weather.list[16].main.temp, this.props.tempUnit))} {this.props.tempUnit}</td>
-            <td>{Math.round(temperatureConverter(this.props.weather.list[24].main.temp, this.props.tempUnit))} {this.props.tempUnit}</td>
-            <td>{Math.round(temperatureConverter(this.props.weather.list[32].main.temp, this.props.tempUnit))} {this.props.tempUnit}</td>
+            {forcasts.map((forcast, index) => {
+              return (
+                <td key={index}>{Math.round(temperatureConverter(forcast.main.temp, tempUnit))} {tempUnit}</td>
+              )
+            })}
           </tr>
           <tr>
             <th scope="row">Beskrivning</th>
-            <td>{this.props.weather.list[0].weather[0].main}</td>
-            <td>{this.props.weather.list[8].weather[0].main}</td>
-            <td>{this.props.weather.list[16].weather[0].main}</td>
-            <td>{this.props.weather.list[24].weather[0].main}</td>
-            <td>{this.props.weather.list[32].weather[0].main}</td>
+            {forcasts.map((forcast, index) => {
+              return (
+                <td key={index}>{forcast.weather[0].main}</td>
+              )
+            })}
           </tr>
           <tr>
             <th scope="row">Luftfuktighet</th>
-            <td>{this.props.weather.list[0].main.humidity} %</td>
-            <td>{this.props.weather.list[8].main.humidity} %</td>
-            <td>{this.props.weather.list[16].main.humidity} %</td>
-            <td>{this.props.weather.list[24].main.humidity} %</td>
-            <td>{this.props.weather.list[32].main.humidity} %</td>
+            {forcasts.map((forcast, index) => {
+              return (
+                <td key={index}>{forcast.main.humidity} %</td>
+              )
+            })}
           </tr>
         </tbody>
       </table>

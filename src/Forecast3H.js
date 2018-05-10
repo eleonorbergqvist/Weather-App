@@ -4,16 +4,15 @@ import timeConverter from './Utils/timeConverter';
 
 class Forecast3H extends Component {
   static defaultProps = {
-    position: null,
-    // currentDate: null,
-  }
-
-  componentWillMount() {
-    // console.log('TodaysWeather');
-    
+    weather: null,
+    tempUnit: null,
   }
 
   render() {
+    const { weather, tempUnit } = this.props
+    let forcasts = this.props.weather.list
+    forcasts = forcasts.slice(0, 8)
+
     return (
       <div>
         <h3>3-timmars väder</h3>
@@ -21,38 +20,29 @@ class Forecast3H extends Component {
           <thead>
             <tr>
               <th scope="col"></th>
-              <th scope="col">{timeConverter(this.props.weather.list[0].dt)}</th>
-              <th scope="col">{timeConverter(this.props.weather.list[1].dt)}</th>
-              <th scope="col">{timeConverter(this.props.weather.list[2].dt)}</th>
-              <th scope="col">{timeConverter(this.props.weather.list[3].dt)}</th>
-              <th scope="col">{timeConverter(this.props.weather.list[4].dt)}</th>
-              <th scope="col">{timeConverter(this.props.weather.list[5].dt)}</th>
-              <th scope="col">{timeConverter(this.props.weather.list[6].dt)}</th>
-              <th scope="col">{timeConverter(this.props.weather.list[7].dt)}</th>
+              {forcasts.map((forcast, index) => {
+                return (
+                  <th scope="col" key={index}>{timeConverter(forcast.dt)}</th>
+                )
+              })}
             </tr>
           </thead>
           <tbody>
             <tr>
               <th scope="row">Temperatur</th>
-              <td>{Math.round(temperatureConverter(this.props.weather.list[0].main.temp, this.props.tempUnit))} {this.props.tempUnit}</td>
-              <td>{Math.round(temperatureConverter(this.props.weather.list[1].main.temp, this.props.tempUnit))} {this.props.tempUnit}</td>
-              <td>{Math.round(temperatureConverter(this.props.weather.list[2].main.temp, this.props.tempUnit))} {this.props.tempUnit}</td>
-              <td>{Math.round(temperatureConverter(this.props.weather.list[3].main.temp, this.props.tempUnit))} {this.props.tempUnit}</td>
-              <td>{Math.round(temperatureConverter(this.props.weather.list[4].main.temp, this.props.tempUnit))} {this.props.tempUnit}</td>
-              <td>{Math.round(temperatureConverter(this.props.weather.list[5].main.temp, this.props.tempUnit))} {this.props.tempUnit}</td>
-              <td>{Math.round(temperatureConverter(this.props.weather.list[6].main.temp, this.props.tempUnit))} {this.props.tempUnit}</td>
-              <td>{Math.round(temperatureConverter(this.props.weather.list[7].main.temp, this.props.tempUnit))} {this.props.tempUnit}</td>
+              {forcasts.map((forcast, index) => {
+                return (
+                  <td key={index}>{Math.round(temperatureConverter(forcast.main.temp, tempUnit))} {tempUnit}</td>
+                )
+              })}
             </tr>
             <tr>
               <th scope="row">Luftfuktighet</th>
-              <td>{this.props.weather.list[0].main.humidity} %</td>
-              <td>{this.props.weather.list[1].main.humidity} %</td>
-              <td>{this.props.weather.list[2].main.humidity} %</td>
-              <td>{this.props.weather.list[3].main.humidity} %</td>
-              <td>{this.props.weather.list[4].main.humidity} %</td>
-              <td>{this.props.weather.list[5].main.humidity} %</td>
-              <td>{this.props.weather.list[6].main.humidity} %</td>
-              <td>{this.props.weather.list[7].main.humidity} %</td>
+              {forcasts.map((forcast, index) => {
+                return (
+                  <td key={index}>{forcast.main.humidity} %</td>
+                )
+              })}
             </tr>
           </tbody>
         </table>

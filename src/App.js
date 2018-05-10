@@ -9,6 +9,7 @@ class App extends Component {
   state = {
     position: {},
     temperature: 'C°',
+    loaded: false,
     // currentDate: new Date().today()
   }
 
@@ -50,14 +51,12 @@ class App extends Component {
     });
   }
 
-  handleFarenheitChange(event) {
-    this.setState({temperature: 'F°'});
-    console.log(this.state.temperature);
+  handleFarenheitChange = (event) => {
+    this.setState({ temperature: 'F°' });
   }
 
-  handleCelciusChange(event) {
-    this.setState({temperature: 'C°'});
-    console.log(this.state.temperature);
+  handleCelciusChange = (event) => {
+    this.setState({ temperature: 'C°' });
   }
 
   componentWillMount() {
@@ -70,18 +69,32 @@ class App extends Component {
       return position;
     })
     .then((position) => {
+      const { latitude, longitude } = position.coords;
+
       Promise.all([
-        this.getTodaysWeather(position.coords.latitude, position.coords.longitude),
-        this.get3HourAnd5DaysForecast(position.coords.latitude, position.coords.longitude),
-        this.get10DaysForecast(position.coords.latitude, position.coords.longitude)
+        this.getTodaysWeather(latitude, longitude),
+        this.get3HourAnd5DaysForecast(latitude, longitude),
+        this.get10DaysForecast(latitude, longitude)
       ]).then((data) => {
         const combinedData = Object.assign({}, ...data);
-        this.setState(combinedData);
+
+        this.setState({
+          ...{ loaded: true },
+          ...combinedData,
+        });
       })
     });
   }
 
   render() {
+    const { loaded } = this.state
+
+    if (!loaded) {
+      return (
+        <img className="loader" src="ajax-loader.gif" />
+      )
+    }
+
     return (
       <div className="App">
         <div className="jumbotron jumbotron-fluid">
@@ -89,17 +102,33 @@ class App extends Component {
             <h1 className="display-4">Vädret</h1>
             <div className="btn-group btn-group-toggle" data-toggle="buttons">
               <label className="btn btn-info">
-                <input type="radio" name="options" id="option1" autoComplete="off" onChange={this.handleCelciusChange.bind(this)} /> Celcius
+                <input 
+                  type="radio" 
+                  name="options" 
+                  id="option1" 
+                  autoComplete="off" 
+                  onChange={this.handleCelciusChange} 
+                /> Celcius
               </label>
               <label className="btn btn-info">
-                <input type="radio" name="options" id="option2" autoComplete="off" onChange={this.handleFarenheitChange.bind(this)} /> Fahrenheit
+                <input 
+                  type="radio" 
+                  name="options" 
+                  id="option2" 
+                  autoComplete="off" 
+                  onChange={this.handleFarenheitChange} 
+                /> Fahrenheit
               </label>
             </div>
           </div>
         </div>
         <div className="row">
           {this.state.openWeatherMapWeather &&
-            <TodaysWeather position={this.state.position} weather={this.state.openWeatherMapWeather} tempUnit={this.state.temperature} />
+            <TodaysWeather 
+              position={this.state.position} 
+              weather={this.state.openWeatherMapWeather} 
+              tempUnit={this.state.temperature} 
+            />
           }
 
           <div className="col-sm-6">
@@ -113,19 +142,24 @@ class App extends Component {
         </div>
 
         {this.state.openWeatherMapForecast &&
-          <Forecast3H position={this.state.position} weather={this.state.openWeatherMapForecast} tempUnit={this.state.temperature} />
+          <Forecast3H 
+            weather={this.state.openWeatherMapForecast} 
+            tempUnit={this.state.temperature} 
+          />
         }
         {this.state.openWeatherMapForecast &&
-          <Forecast5D position={this.state.position} weather={this.state.openWeatherMapForecast} tempUnit={this.state.temperature} />
+          <Forecast5D 
+            weather={this.state.openWeatherMapForecast} 
+            tempUnit={this.state.temperature} 
+          />
         }
         {this.state.smhiForecast &&
-          <LongForecast position={this.state.position} weather={this.state.smhiForecast} tempUnit={this.state.temperature} />
+          <LongForecast 
+            weather={this.state.smhiForecast} 
+            tempUnit={this.state.temperature} 
+          />
         }
-
-
       </div>
-
-
     );
   }
 }
