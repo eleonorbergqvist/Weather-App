@@ -10,7 +10,6 @@ class App extends Component {
     position: {},
     temperature: 'C°',
     loaded: false,
-    // currentDate: new Date().today()
   }
 
   getLocation() {
@@ -21,8 +20,8 @@ class App extends Component {
 
   getTodaysWeather(lat, lng) {
     return new Promise((resolve, reject) => {
-      //fetch('https://api.openweathermap.org/data/2.5/weather?lat=-0.13&lon=51.51&APPID=5a2357c5e034972f99a706acc29ebdda')
-      fetch('http://localhost:3000/fixtures/openweathermap.weather.json')
+      fetch('https://api.openweathermap.org/data/2.5/weather?lat='+lat+'&lon='+lng+'&APPID=5a2357c5e034972f99a706acc29ebdda')
+      //fetch('http://localhost:3000/fixtures/openweathermap.weather.json')
       .then((resp) => resp.json())
       .then((data) => {
         resolve({ openWeatherMapWeather: data });
@@ -33,7 +32,8 @@ class App extends Component {
 
   get3HourAnd5DaysForecast(lat, lng) {
     return new Promise((resolve, reject) => {
-      fetch('http://localhost:3000/fixtures/openweathermap.forecast.json')
+      fetch('https://api.openweathermap.org/data/2.5/forecast?lat='+lat+'&lon='+lng+'&APPID=5a2357c5e034972f99a706acc29ebdda')
+      //fetch('http://localhost:3000/fixtures/openweathermap.forecast.json')
       .then((resp) => resp.json())
       .then((data) => {
         resolve({ openWeatherMapForecast: data });
@@ -43,7 +43,8 @@ class App extends Component {
 
   get10DaysForecast(lat, lng) {
     return new Promise((resolve, reject) => {
-      fetch('http://localhost:3000/fixtures/smhi.forecast.json')
+      fetch('https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/'+lng+'/lat/'+lat+'/data.json')
+      //fetch('http://localhost:3000/fixtures/smhi.forecast.json')
       .then((resp) => resp.json())
       .then((data) => {
         resolve({ smhiForecast: data });
@@ -122,25 +123,13 @@ class App extends Component {
             </div>
           </div>
         </div>
-        <div className="row">
-          {this.state.openWeatherMapWeather &&
-            <TodaysWeather 
-              position={this.state.position} 
-              weather={this.state.openWeatherMapWeather} 
-              tempUnit={this.state.temperature} 
-            />
-          }
-
-          <div className="col-sm-6">
-            <div className="card">
-              <div className="card-body">
-                <h3 className="card-title">Karta</h3>
-                <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
+        {this.state.openWeatherMapWeather &&
+          <TodaysWeather 
+            position={this.state.position} 
+            weather={this.state.openWeatherMapWeather} 
+            tempUnit={this.state.temperature} 
+          />
+        }
         {this.state.openWeatherMapForecast &&
           <Forecast3H 
             weather={this.state.openWeatherMapForecast} 
