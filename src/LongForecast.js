@@ -55,7 +55,7 @@ class LongForecast extends Component {
               <th scope="row"></th>
               {weatherTimes.map((x, index) => {
                 return (
-                  <td key={index}><img src={"../icons/" + x.parameters[18].values[0] + ".png"} /></td>
+                  <td key={index}><img src={"./icons/" + x.parameters[18].values[0] + ".png"} /></td>
                 )
               })}
             </tr>

@@ -70,7 +70,10 @@ class App extends Component {
       return position;
     })
     .then((position) => {
-      const { latitude, longitude } = position.coords;
+      let { latitude, longitude } = position.coords;
+
+      latitude = latitude.toFixed(4);
+      longitude = longitude.toFixed(4);
 
       Promise.all([
         this.getTodaysWeather(latitude, longitude),
