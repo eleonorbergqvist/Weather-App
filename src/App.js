@@ -10,6 +10,7 @@ class App extends Component {
     position: {},
     temperature: 'C°',
     loaded: false,
+    error: null,
   }
 
   getLocation() {
@@ -87,15 +88,28 @@ class App extends Component {
           ...combinedData,
         });
       })
-    });
+      .catch(error => {
+        this.setState({ error: 'Kunde inte ladda in data' });
+      });
+
+    })
+    .catch(error => {
+      this.setState({ error: 'Kunde inte ladda in dina koordinater' });
+    })
   }
 
   render() {
-    const { loaded } = this.state
+    const { error, loaded } = this.state
+
+    if (error) {
+      return (
+        <p className="error">Fel: {error}</p>
+      )
+    }
 
     if (!loaded) {
       return (
-        <img className="loader" src="ajax-loader.gif" />
+        <img className="loader" src="ajax-loader.gif" alt="Loader" />
       )
     }
 

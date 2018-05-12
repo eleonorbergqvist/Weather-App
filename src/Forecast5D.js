@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import temperatureConverter from './Utils/temperatureConverter';
-import timeConverter from './Utils/timeConverter';
 
 class Forecast5D extends Component {
   static defaultProps = {
@@ -33,7 +32,7 @@ class Forecast5D extends Component {
             <th scope="row"></th>
             {forcasts.map((forcast, index) => {
               return (
-                <td key={index}><img src={"http://openweathermap.org/img/w/" + forcast.weather[0].icon + ".png"} /></td>
+                <td key={index}><img alt={forcast.weather[0].description} src={"https://openweathermap.org/img/w/" + forcast.weather[0].icon + ".png"} /></td>
               )
             })}
           </tr>

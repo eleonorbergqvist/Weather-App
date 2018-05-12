@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import temperatureConverter from './Utils/temperatureConverter';
-import timeConverter from './Utils/timeConverter';
 
 class LongForecast extends Component {
   static defaultProps = {
@@ -55,7 +54,7 @@ class LongForecast extends Component {
               <th scope="row"></th>
               {weatherTimes.map((x, index) => {
                 return (
-                  <td key={index}><img src={"./icons/" + x.parameters[18].values[0] + ".png"} /></td>
+                  <td key={index}><img alt="Icon" src={"./icons/" + x.parameters[18].values[0] + ".png"} /></td>
                 )
               })}
             </tr>

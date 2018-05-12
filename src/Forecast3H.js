@@ -10,7 +10,7 @@ class Forecast3H extends Component {
 
   render() {
     const { weather, tempUnit } = this.props
-    let forcasts = this.props.weather.list
+    let forcasts = weather.list
     forcasts = forcasts.slice(0, 8)
 
     return (
